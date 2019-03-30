@@ -15,7 +15,8 @@ class Agent():
     """Interacts with and learns from the environment."""
 
     def __init__(self, state_size, action_size, random_seed,
-                 batch_size=128, gamma=0.99, tau=1e-3, lr_actor=1e-4, lr_critic=1e-3, weight_decay=0, device="cuda:0"):
+                 batch_size=128, gamma=0.99, tau=1e-3, lr_actor=1e-4, lr_critic=1e-3, weight_decay=0, device="cuda:0",
+                 use_batch_norm=False, n_critic_layer=3):
         """Initialize an Agent object.
 
         Params
@@ -37,13 +38,13 @@ class Agent():
         self.seed = random.seed(random_seed)
 
         # Actor Network (w/ Target Network)
-        self.actor_local = Actor(state_size, action_size, random_seed).to(self.device)
-        self.actor_target = Actor(state_size, action_size, random_seed).to(self.device)
+        self.actor_local = Actor(state_size, action_size, random_seed, use_batch_norm).to(self.device)
+        self.actor_target = Actor(state_size, action_size, random_seed, use_batch_norm).to(self.device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=self.lr_actor)
 
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, random_seed).to(self.device)
-        self.critic_target = Critic(state_size, action_size, random_seed).to(self.device)
+        self.critic_local = Critic(state_size, action_size, random_seed, n_critic_layer, use_batch_norm).to(self.device)
+        self.critic_target = Critic(state_size, action_size, random_seed, n_critic_layer, use_batch_norm).to(self.device)
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=self.lr_critic, weight_decay=self.weight_decay)
 
 

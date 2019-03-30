@@ -12,7 +12,7 @@ def hidden_init(layer):
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, seed, fc1_units=400, fc2_units=300):
+    def __init__(self, state_size, action_size, seed, fc1_units=400, fc2_units=300, use_batch_norm=False):
         """Initialize parameters and build model.
         Params
         ======
@@ -24,7 +24,10 @@ class Actor(nn.Module):
         """
         super(Actor, self).__init__()
         self.seed = torch.manual_seed(seed)
-        self.fc1 = nn.Linear(state_size, fc1_units)
+        if use_batch_norm:
+            self.fc1 = nn.Sequential(nn.Linear(state_size, fc1_units), torch.nn.BatchNorm2d(fc1_units))
+        else:
+            self.fc1 = nn.Linear(state_size, fc1_units)
         self.fc2 = nn.Linear(fc1_units, fc2_units)
         self.fc3 = nn.Linear(fc2_units, action_size)
         self.reset_parameters()
@@ -44,7 +47,7 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     """Critic (Value) Model."""
 
-    def __init__(self, state_size, action_size, seed, fcs1_units=400, fc2_units=300):
+    def __init__(self, state_size, action_size, seed, fcs1_units=400, fc2_units=300, n_critic_layer=3, use_batch_norm=False):
         """Initialize parameters and build model.
         Params
         ======
@@ -54,12 +57,26 @@ class Critic(nn.Module):
             fcs1_units (int): Number of nodes in the first hidden layer
             fc2_units (int): Number of nodes in the second hidden layer
         """
+        assert n_critic_layer > 2
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
-        self.fcs1 = nn.Linear(state_size, fcs1_units)
+        if use_batch_norm:
+            self.fcs1 = nn.Sequential(nn.Linear(state_size, fcs1_units), torch.nn.BatchNorm2d(fcs1_units))
+        else:
+            self.fcs1 = nn.Linear(state_size, fcs1_units)
+
         self.fc2 = nn.Linear(fcs1_units+action_size, fc2_units)
-        self.fc3 = nn.Linear(fc2_units, 1)
+        if n_critic_layer == 3:
+            self.fc3 = nn.Linear(fc2_units, 1)
+        else:
+            last_layers = []
+            for i in range(n_critic_layer - 3):
+                last_layers.append(nn.Linear(fc2_units, fc2_units))
+            last_layers.append(nn.Linear(fc2_units, 1))
+            self.fc3 = nn.Sequential(*last_layers)
+
         self.reset_parameters()
+        print(self)
 
     def reset_parameters(self):
         self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))

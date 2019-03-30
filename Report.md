@@ -18,5 +18,4 @@
 ### Problem:
 The algorithm maybe not explorative enough to learn the space. 
 
-
 ### Ideas for Future Work

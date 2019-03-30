@@ -1,7 +1,8 @@
-python main.py --title gamma_099_tau_1e-3 --gamma 0.99 --tau 1e-3 --device 4
-python main.py --title gamma_095_tau_1e-3 --gamma 0.95 --tau 1e-3 --device 5
-python main.py --title gamma_099_tau_1e-4 --gamma 0.99 --tau 1e-4 --device 6
-python main.py --title gamma_099_tau_1e-3_lractor_5e-3 --gamma 0.99 --tau 1e-3 --lr_actor 5e-3 --device 7
+#!/usr/bin/env bash
+python main.py --title use_bn --gamma 0.99 --tau 1e-3 --use_batch_norm True --n_critic_layer 3 --device 4
+python main.py --title use_bn_n_critic_layer4 --gamma 0.99 --tau 1e-3 --use_batch_norm True --n_critic_layer 4 --device 4
+python main.py --title use_bn_n_critic_layer4_lr_actor_5e-4 --gamma 0.99 --tau 1e-3 --use_batch_norm True --n_critic_layer 4 --lr_actor 5e-4 --device 4
+
 
 
 
