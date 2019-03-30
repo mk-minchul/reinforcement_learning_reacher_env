@@ -85,7 +85,7 @@ def ddpg(env, state_size, action_size, num_agents, brain_name,
                 torch.save(agent.actor_local.state_dict(), 'experiments/{}/checkpoint_actor.pth'.format(title))
                 torch.save(agent.critic_local.state_dict(), 'experiments/{}/checkpoint_critic.pth'.format(title))
 
-    return mean_scores
+    return mean_scores, title
 
 def main():
     parser = argparse.ArgumentParser(description='Options to train the model.')
@@ -121,7 +121,7 @@ def main():
     print('There are {} agents. Each observes a state with length: {}'.format(states.shape[0], state_size))
     os.makedirs("experiments/",exist_ok=True)
     print("Experiment result will be saved at : experiments/{}".format(args.title))
-    mean_scores = ddpg(env, state_size, action_size, num_agents, brain_name, title=args.title,
+    mean_scores, title = ddpg(env, state_size, action_size, num_agents, brain_name, title=args.title,
                        n_episodes=2000, max_t=300, print_every=100,
                        batch_size=args.batch_size, gamma=args.gamma, tau=args.tau,
                        lr_actor=args.lr_actor, lr_critic=args.lr_critic,
@@ -136,7 +136,7 @@ def main():
     ax.set_xlabel("number of episodes")
     ax.set_ylabel("avg score of 100 episodes")
     ax.set_title("Averge Score Plot {}".format(args.title))
-    plt.savefig("experiments/{}/score.png".format(args.title))
+    plt.savefig("experiments/{}/score.png".format(title))
 
     print("done")
 
