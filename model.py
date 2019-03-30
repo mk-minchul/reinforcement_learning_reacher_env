@@ -9,6 +9,17 @@ def hidden_init(layer):
     lim = 1. / np.sqrt(fan_in)
     return (-lim, lim)
 
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        if m.out_features == 4:
+            m.weight.data.uniform_(-3e-3, 3e-3)
+        else:
+            low, high = hidden_init(m)
+            m.weight.data.uniform_(low, high)
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.constant_(m.weight, 1)
+        nn.init.constant_(m.bias, 0)
+
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
@@ -25,7 +36,10 @@ class Actor(nn.Module):
         super(Actor, self).__init__()
         self.seed = torch.manual_seed(seed)
         if use_batch_norm:
-            self.fc1 = nn.Sequential(nn.Linear(state_size, fc1_units), torch.nn.BatchNorm2d(fc1_units))
+            self.fc1 = nn.Sequential(torch.nn.BatchNorm1d(state_size),
+                                     nn.Linear(state_size, fc1_units),
+                                     # torch.nn.BatchNorm1d(fc1_units)
+                                     )
         else:
             self.fc1 = nn.Linear(state_size, fc1_units)
         self.fc2 = nn.Linear(fc1_units, fc2_units)
@@ -33,9 +47,14 @@ class Actor(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        self.fc1.weight.data.uniform_(*hidden_init(self.fc1))
-        self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
-        self.fc3.weight.data.uniform_(-3e-3, 3e-3)
+
+        self.apply(init_weights)
+        # if isinstance(self.fc1, nn.Sequential):
+        #     self.fc1[0].weight.data.uniform_(*hidden_init(self.fc1[0]))
+        # else:
+        #     self.fc1.weight.data.uniform_(*hidden_init(self.fc1))
+        # self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
+        # self.fc3.apply(init_weights)
 
     def forward(self, state):
         """Build an actor (policy) network that maps states -> actions."""
@@ -61,7 +80,7 @@ class Critic(nn.Module):
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
         if use_batch_norm:
-            self.fcs1 = nn.Sequential(nn.Linear(state_size, fcs1_units), torch.nn.BatchNorm2d(fcs1_units))
+            self.fcs1 = nn.Sequential(nn.Linear(state_size, fcs1_units), torch.nn.BatchNorm1d(fcs1_units))
         else:
             self.fcs1 = nn.Linear(state_size, fcs1_units)
 
@@ -79,9 +98,16 @@ class Critic(nn.Module):
         print(self)
 
     def reset_parameters(self):
-        self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))
-        self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
-        self.fc3.weight.data.uniform_(-3e-3, 3e-3)
+        self.apply(init_weights)
+        #
+        # self.fcs1.apply(init_weights)
+        # self.
+        # if isinstance(self.fcs1, nn.Sequential):
+        #     self.fcs1[0].weight.data.uniform_(*hidden_init(self.fcs1[0]))
+        # else:
+        #     self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))
+        # self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
+        # self.fc3.apply(init_weights)
 
     def forward(self, state, action):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""

@@ -38,13 +38,15 @@ class Agent():
         self.seed = random.seed(random_seed)
 
         # Actor Network (w/ Target Network)
-        self.actor_local = Actor(state_size, action_size, random_seed, use_batch_norm).to(self.device)
-        self.actor_target = Actor(state_size, action_size, random_seed, use_batch_norm).to(self.device)
+        self.actor_local = Actor(state_size, action_size, random_seed, use_batch_norm=use_batch_norm).to(self.device)
+        self.actor_target = Actor(state_size, action_size, random_seed, use_batch_norm=use_batch_norm).to(self.device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=self.lr_actor)
 
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, random_seed, n_critic_layer, use_batch_norm).to(self.device)
-        self.critic_target = Critic(state_size, action_size, random_seed, n_critic_layer, use_batch_norm).to(self.device)
+        self.critic_local = Critic(state_size, action_size, random_seed,
+                                   n_critic_layer=n_critic_layer, use_batch_norm=use_batch_norm).to(self.device)
+        self.critic_target = Critic(state_size, action_size, random_seed,
+                                    n_critic_layer=n_critic_layer, use_batch_norm=use_batch_norm).to(self.device)
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=self.lr_critic, weight_decay=self.weight_decay)
 
 

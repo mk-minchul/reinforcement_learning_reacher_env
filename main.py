@@ -42,9 +42,9 @@ def ddpg(env, state_size, action_size, num_agents, brain_name,
         title = "experiment"
     current_time = strftime("%Y-%m-%d_%H:%M:%S", gmtime())
     title = title + "_" + current_time
-    os.makedirs(title, exist_ok=True)
 
     # write a new file
+    os.makedirs("experiments/{}".format(title), exist_ok=True)
     f = open("experiments/{}/scores.txt".format(title), "w")
     f.close()
 
@@ -99,11 +99,12 @@ def main():
     parser.add_argument("--device",                         type=int,       default=0)
     parser.add_argument('--use_batch_norm',                 type=str2bool,  default="False")
     parser.add_argument('--n_critic_layer',                 type=int,       default=3)
+    parser.add_argument('--port',                           type=int,       default=64735)
 
     args = parser.parse_args(sys.argv[1:])
     args.device = "cuda:{}".format(args.device)
-    env = UnityEnvironment(file_name='data/Reacher_Linux_NoVis_multiple/Reacher.x86_64',
-                           base_port=64735, no_graphics=False, docker_training=False)
+    env = UnityEnvironment(file_name='data/Reacher_Linux_NoVis_multiple{}/Reacher.x86_64'.format(args.port-64734),
+                           base_port=args.port, no_graphics=False, docker_training=False)
     brain_name = env.brain_names[0]
     brain = env.brains[brain_name]
     env_info = env.reset(train_mode=True)[brain_name]
@@ -121,7 +122,7 @@ def main():
     os.makedirs("experiments/",exist_ok=True)
     print("Experiment result will be saved at : experiments/{}".format(args.title))
     mean_scores = ddpg(env, state_size, action_size, num_agents, brain_name, title=args.title,
-                       n_episodes=5000, max_t=300, print_every=100,
+                       n_episodes=2000, max_t=300, print_every=100,
                        batch_size=args.batch_size, gamma=args.gamma, tau=args.tau,
                        lr_actor=args.lr_actor, lr_critic=args.lr_critic,
                        weight_decay=args.weight_decay, device=args.device,
