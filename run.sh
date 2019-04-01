@@ -13,3 +13,8 @@ python main.py --title bs_256_exp2 --batch_size 256 --gamma 0.99 --tau 5e-2 --us
 python main.py --title bs_256_exp3 --batch_size 256 --gamma 0.99 --tau 5e-2 --use_batch_norm True --n_critic_layer 3 --device 6 --port 64737
 python main.py --title bs_256_exp4 --batch_size 128 --gamma 0.99 --tau 5e-2 --use_batch_norm True --n_critic_layer 3 --weight_decay 0.99 --device 7 --port 64738
 
+
+python main.py --title bs_256_exp5 --batch_size 256 --gamma 0.99 --tau 1e-2 --use_batch_norm True --n_critic_layer 4 --lr_actor 1e-4 --device 4 --port 64735
+python main.py --title bs_256_exp6 --batch_size 256 --gamma 0.99 --tau 5e-2 --use_batch_norm True --n_critic_layer 5 --lr_actor 1e-4 --device 5 --port 64736
+python main.py --title bs_256_exp7 --batch_size 256 --gamma 0.99 --tau 5e-2 --use_batch_norm True --n_critic_layer 4 --lr_actor 1e-3 --device 6 --port 64737
+python main.py --title bs_256_exp8 --batch_size 256 --gamma 0.99 --tau 5e-2 --use_batch_norm True --n_critic_layer 5 --lr_actor 1e-4 --lr_critic 1e-4 --device 7 --port 64738
