@@ -23,7 +23,7 @@ def init_weights(m):
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, seed, fc1_units=400, fc2_units=300, use_batch_norm=False):
+    def __init__(self, state_size, action_size, seed, fc1_units=400, fc2_units=300, use_batch_norm=False, n_actor_layer=3):
         """Initialize parameters and build model.
         Params
         ======
@@ -36,14 +36,23 @@ class Actor(nn.Module):
         super(Actor, self).__init__()
         self.seed = torch.manual_seed(seed)
         if use_batch_norm:
-            self.fc1 = nn.Sequential(torch.nn.BatchNorm1d(state_size),
-                                     nn.Linear(state_size, fc1_units),
-                                     # torch.nn.BatchNorm1d(fc1_units)
+            self.fc1 = nn.Sequential(
+                torch.nn.BatchNorm1d(state_size),
+                nn.Linear(state_size, fc1_units),
                                      )
         else:
             self.fc1 = nn.Linear(state_size, fc1_units)
         self.fc2 = nn.Linear(fc1_units, fc2_units)
-        self.fc3 = nn.Linear(fc2_units, action_size)
+
+        if n_actor_layer == 3:
+            self.fc3 = nn.Linear(fc2_units, action_size)
+        else:
+            last_layers = []
+            for i in range(n_actor_layer - 3):
+                last_layers.append(nn.Linear(fc2_units, fc2_units))
+            last_layers.append(nn.Linear(fc2_units, action_size))
+            self.fc3 = nn.Sequential(*last_layers)
+
         self.reset_parameters()
 
     def reset_parameters(self):

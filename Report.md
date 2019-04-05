@@ -1,4 +1,4 @@
-# Banana Navigation
+# Reacher Environment 
 
 ### Learning Algorithm
 - DDPG method

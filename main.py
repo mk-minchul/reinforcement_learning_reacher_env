@@ -30,12 +30,13 @@ def str2bool(v):
 def ddpg(env, state_size, action_size, num_agents, brain_name,
          n_episodes=1000, max_t=300, print_every=100, title=None,
          batch_size=128, gamma=0.99, tau=1e-3, lr_actor=1e-4, lr_critic=1e-3, weight_decay=0, device="cuda:0",
-         use_batch_norm=False, n_critic_layer=3):
+         use_batch_norm=False, n_critic_layer=3, n_actor_layer=3, fc1_units=128, fc2_units=64):
 
     agent = Agent(state_size=state_size, action_size=action_size, random_seed=2,
                   batch_size=batch_size, gamma=gamma, tau=tau, lr_actor=lr_actor,
                   lr_critic=lr_critic, weight_decay=weight_decay, device=device,
-                  use_batch_norm=use_batch_norm, n_critic_layer=n_critic_layer)
+                  use_batch_norm=use_batch_norm, n_critic_layer=n_critic_layer, n_actor_layer=n_actor_layer,
+                  fc1_units=fc1_units, fc2_units=fc2_units)
 
     # create save directory
     if title is None:
@@ -99,7 +100,11 @@ def main():
     parser.add_argument("--device",                         type=int,       default=0)
     parser.add_argument('--use_batch_norm',                 type=str2bool,  default="False")
     parser.add_argument('--n_critic_layer',                 type=int,       default=3)
+    parser.add_argument('--n_actor_layer',                 type=int,       default=3)
     parser.add_argument('--port',                           type=int,       default=64735)
+    parser.add_argument('--n_episodes',                     type=int,       default=2000)
+    parser.add_argument('--fc1_units',                      type=int,       default=128)
+    parser.add_argument('--fc2_units',                      type=int,       default=64)
 
     args = parser.parse_args(sys.argv[1:])
     args.device = "cuda:{}".format(args.device)
@@ -122,11 +127,13 @@ def main():
     os.makedirs("experiments/",exist_ok=True)
     print("Experiment result will be saved at : experiments/{}".format(args.title))
     mean_scores, title = ddpg(env, state_size, action_size, num_agents, brain_name, title=args.title,
-                       n_episodes=2000, max_t=300, print_every=100,
-                       batch_size=args.batch_size, gamma=args.gamma, tau=args.tau,
-                       lr_actor=args.lr_actor, lr_critic=args.lr_critic,
-                       weight_decay=args.weight_decay, device=args.device,
-                       use_batch_norm=args.use_batch_norm, n_critic_layer=args.n_critic_layer)
+                              n_episodes=args.n_episodes, max_t=300, print_every=100,
+                              batch_size=args.batch_size, gamma=args.gamma, tau=args.tau,
+                              lr_actor=args.lr_actor, lr_critic=args.lr_critic,
+                              weight_decay=args.weight_decay, device=args.device,
+                              use_batch_norm=args.use_batch_norm,
+                              n_critic_layer=args.n_critic_layer,n_actor_layer=args.n_actor_layer,
+                              fc1_units=args.fc1_units, fc2_units=args.fc2_units)
 
     # create plot
     fig, ax = plt.subplots()
