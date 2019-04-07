@@ -20,6 +20,8 @@ def init_weights(m):
         nn.init.constant_(m.weight, 1)
         nn.init.constant_(m.bias, 0)
 
+# model architecture such as where to place batchnorm has been borrowed from https://github.com/ledgerW/reacher_drl
+
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
@@ -42,6 +44,8 @@ class Actor(nn.Module):
         self.bn_fc2 = nn.BatchNorm1d(fc2_units)
         self.fc3 = nn.Linear(fc2_units, action_size)
         self.reset_parameters()
+        print(self)
+
 
     def reset_parameters(self):
         self.apply(init_weights)
