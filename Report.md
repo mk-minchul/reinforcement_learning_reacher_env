@@ -28,6 +28,15 @@ DDPG is a policy gradient algorithm that uses a stochastic behavior policy for g
     
 ##### Network Architecture:
 ```
+Actor(
+  (bn_input): BatchNorm1d(33, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (fc1): Linear(in_features=33, out_features=128, bias=True)
+  (bn_fc1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (fc2): Linear(in_features=128, out_features=64, bias=True)
+  (bn_fc2): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (fc3): Linear(in_features=64, out_features=4, bias=True)
+)
+
 Critic(                                                                                                       
   (bn_input): BatchNorm1d(33, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)                 
   (fcs1): Linear(in_features=33, out_features=400, bias=True)                                                 
