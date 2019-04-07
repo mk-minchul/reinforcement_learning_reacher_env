@@ -13,173 +13,100 @@
     - 4 dimension, continuous
 
 
-### Problem:
-Tried training under variety of settings, yet did not see it reach above 10.  
+### DDPG details
 
-### experiment log
+DDPG is a policy gradient algorithm that uses a stochastic behavior policy for good exploration but estimates a deterministic target policy, which is much easier to learn
 
-#### batchsize 128 experiment 1
-    - batch norm : False
-    - tau : 1e-3
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
+##### Hyper parameters 
+    - gamma 0.99 
+    - tau 1e-3 
+    - max_t=1000, 
+    - lr_actor=1e-4 
+    - lr_critic=3e-4
+    - n_updates 10
+    - update_intervals 20
+    
+##### Network Architecture:
+```
+Critic(                                                                                                       
+  (bn_input): BatchNorm1d(33, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)                 
+  (fcs1): Linear(in_features=33, out_features=400, bias=True)                                                 
+  (bn_fcs1): BatchNorm1d(400, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)                 
+  (fc2): Linear(in_features=404, out_features=300, bias=True)                                                 
+  (fc3): Linear(in_features=300, out_features=1, bias=True)                                                   
+  )
+  
+ 
+```
+    
+##### algorithm
 
-![score](experiments/default_2019-03-30_01:10:12/scores.png)
-
-#### batchsize 128 experiment 2 ( has batchnorm)
-    - batch norm : True
-    - tau : 1e-3
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/use_bn_2019-03-30_01:13:53/scores.png)
-
-
-#### batchsize 128 experiment 3 (smaller tau)
-    - batch norm : True
-    - tau : 1e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/use_bn_n_tau_1e-2_2019-03-30_01:36:33/scores.png)
-
-
-#### batchsize 128 experiment 4 (smaller tau, bigger lr for actor)
-    - batch norm : True
-    - tau : 1e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 5e-4
-    - weight_decay 1.0
-
-![score](experiments/use_bn_n_lr_actor_5e-4_tau_1e-2_2019-03-30_01:36:47/scores.png)
-
-
-#### batchsize 128 experiment 5 (no batchnorm, smaller tau)
-    - batch norm : False
-    - tau : 1e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/no_bn_n_tau_1e-2_2019-03-30_11:14:54/score.png)
-
-
-#### batchsize 128 experiment 6 (yes batchnorm, a bit smaller tau)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bn_n_tau_5e-2_2019-03-30_11:15:02/score.png)
-
-
-#### batchsize 128 experiment 7 (yes batchnorm, a bit smaller tau)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bn_n_tau_5e-2_2019-03-30_11:15:02/score.png)
-
-
-#### batchsize 256 experiment 1 (batchnorm, weightdecay 0.99)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 4
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 0.99
-
-![score](experiments/bs_256_exp1_2019-03-30_16:01:58/score.png)
-
-#### batchsize 256 experiment 2 (batchnorm)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 4
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp2_2019-03-30_16:02:15/score.png)
-
-
-#### batchsize 256 experiment 3 (batchnorm, n critic layer 3)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp3_2019-03-30_16:02:23/score.png)
-
-
-#### batchsize 256 experiment 4 (batchnorm, n critic layer 3, weight decay)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 3
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 0.99
-
-![score](experiments/bs_256_exp4_2019-03-30_16:04:38/score.png)
-
-
-#### batchsize 256 experiment 5 (batchnorm, smaller tau, n critic layer 4)
-    - batch norm : True
-    - tau : 1e-2
-    - n_critic_layer : 4
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp5_2019-03-30_23:23:04/score.png)
-
-
-#### batchsize 256 experiment 6 (batchnorm, smaller tau, n critic layer 5)
-    - batch norm : True
-    - tau : 1e-2
-    - n_critic_layer : 5
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp6_2019-03-30_23:23:22/score.png)
-
-#### batchsize 256 experiment 7 (batchnorm, n critic layer 4, lr actor 1e-3)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 4
-    - gamma : 0.99
-    - lr_actor : 1e-3
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp7_2019-03-30_23:23:38/score.png)
-
-
-#### batchsize 256 experiment 7 (batchnorm, n critic layer 5, lr actor 1e-4 lr_critic 1-e4)
-    - batch norm : True
-    - tau : 5e-2
-    - n_critic_layer : 5
-    - gamma : 0.99
-    - lr_actor : 1e-4
-    - lr_critic : 1e-4
-    - weight_decay 1.0
-
-![score](experiments/bs_256_exp8_2019-03-30_23:23:52/score.png)
-
-
+1. Observe states with the current policty mu theta + n
+    ```python
+    actions = agent.act(states)
+    ```
+2. Execute a in the environment and observe next state (s,a,r,s',d')
+    ```python
+    env_info = env.step(actions)[brain_name]  # send all actions to tne environment
+    next_states = env_info.vector_observations  # get next state (for each agent)
+    rewards = env_info.rewards  # get reward (for each agent)
+    dones = env_info.local_done  # see if episode finished
+    ```
+    
+3. save experiences to the replay buffer
+    ```python
+    agent.remember(states, actions, rewards, next_states, dones)
+    ```
+    
+4. learn by sampling from the replay buffer, if it is time to update, for however many updates
+    ```python
+    agent.update(n_updates, update_intervals, t)
+    ```
+    1. Learn Critic 
+        1. Get predicted next-state actions and Q values from target models
+            ```python
+            actions_next = self.actor_target(next_states)
+            Q_targets_next = self.critic_target(next_states, actions_next)
+            ```
+        2. Compute Q targets for current states (y_i) 
+            ```python
+            [Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))]
+            ```
+        3. Compute critic loss
+            ```python
+            Q_expected = self.critic_local(states, actions)
+            critic_loss = F.mse_loss(Q_expected, Q_targets)
+            ```
+        4. Minimize the critic loss
+            ```python
+            self.critic_optimizer.zero_grad()
+            critic_loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.critic_local.parameters(), 1)  #
+            self.critic_optimizer.step()
+            ```
+    2. Learn Actor
+        1. Compute actor loss
+            ```python
+            actions_pred = self.actor_local(states)
+            actor_loss = -self.critic_local(states, actions_pred).mean()
+            ```
+        2. Minimize the loss
+            ```python
+            self.actor_optimizer.zero_grad()
+            actor_loss.backward()
+            self.actor_optimizer.step()
+            ```
+    3. Update target networks
+        ```python
+        self.soft_update(self.critic_local, self.critic_target, self.tau)
+        self.soft_update(self.actor_local, self.actor_target, self.tau)
+        ```
+     
+###  Score plot: 
+It is considered to be solved after 40 epochs
+![Score Plot](experiments/exp_afterfix_2_2019-04-07_07:16:09/score.png)
+   
+    
 ### Ideas for Future Work
-Might need to change the algorithm. Should I run more episodes?
+
+Instead of using random sampling from the replay buffer, we can use the priortized replay to stablize the learning. 

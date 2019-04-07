@@ -20,13 +20,16 @@ I have used the 20 agents versions.
 4. optionally run `create_plot.py` to create the reward plot.
 
 ### Result
-- The environment is not solved within 5000 episodes using ddqg.
+- The environment solved using ddqg.
     - gamma 0.99 
     - tau 1e-3 
-    - max_t=5000, 
-    - lr_actor=1e-4, 
-    - lr_critic=1e-3
+    - max_t=1000, 
+    - lr_actor=1e-4 
+    - lr_critic=3e-4
+    - n_updates 10
+    - update_intervals 20
     
-- Score plot: 
-![Score Plot](score.png)
-
+###  Score plot: 
+It is considered to be solved after 40 epochs
+![Score Plot](experiments/exp_afterfix_2_2019-04-07_07:16:09/score.png)
+   
